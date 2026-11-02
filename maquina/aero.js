@@ -84,8 +84,8 @@ export function estadoAt(v) {
 }
 
 /** Energía anual (MWh/año) de una G90 bajo un Weibull (k=2) calibrado con el factor de
- *  capacidad observado en España en 2025 (20,6 %, REE): A = 6,2 m/s a altura de buje. */
-export function energiaAnual(A = 6.2, k = 2) {
+ *  capacidad peninsular observado en 2025 (20,1 %, REE): A = 6,13 m/s a altura de buje. */
+export function energiaAnual(A = 6.13, k = 2) {
   let e = 0;
   const dv = 0.25;
   for (let v = 0; v <= 30; v += dv) {

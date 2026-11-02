@@ -31,6 +31,8 @@ FUENTE = {
 POTENCIA_EOLICA_MW = 32593  # peninsular, a 31.12.2025
 POTENCIA_URL = "https://www.sistemaelectrico-ree.es/es/informe-del-sistema-electrico/potencia-instalada"
 GEN_2025_URL = API + "?start_date=2025-01-01T00:00&end_date=2025-12-31T23:59&time_trunc=year"
+# Eólica peninsular 2025, mismo ámbito que la potencia instalada (geo_limit sin geo_ids se ignora):
+GEN_2025_PEN_URL = GEN_2025_URL + "&geo_limit=peninsular&geo_ids=8741"
 
 DESCARTES = 0  # REData publica agregados por tecnología: sin datos personales, sin registros descartables
 
@@ -83,6 +85,9 @@ def validar_mix(anio: dict) -> None:
 def main() -> int:
     hoy = datetime.now(timezone.utc).date()
     anio = anual()
+    pen = por_tecnologia(descargar(GEN_2025_PEN_URL))["Eólica"][0][1]
+    if not 0.9 < pen / anio["mix"]["Eólica"]["mwh"] < 1.0:
+        raise SystemExit(f"Eólica peninsular fuera de rango frente a la nacional: {pen}")
     validar_mix(anio)
 
     # Serie diaria: últimos 400 días en dos tramos de año natural.
@@ -111,10 +116,10 @@ def main() -> int:
     media = sum(valores) / len(valores)
     var_pct = round((max(valores) - min(valores)) / media * 100, 0)
 
-    # Factor de capacidad 2025: generación nacional / (potencia peninsular × 8760 h).
-    # Nota metodológica: la potencia creció durante el año; REE no publica la potencia
-    # media del parque en la API, así que este factor es un mínimo razonable.
-    factor = round(anio["mix"]["Eólica"]["mwh"] / (POTENCIA_EOLICA_MW * 8760) * 100, 1)
+    # Factor de capacidad 2025, ámbito PENINSULAR en numerador y denominador:
+    # eólica peninsular / (potencia peninsular a 31.12.2025 × 8760 h). La potencia creció
+    # durante el año y REE no publica la media del parque, así que es un mínimo razonable.
+    factor = round(pen / (POTENCIA_EOLICA_MW * 8760) * 100, 1)
     # Aerogeneradores G90-2.0 MW equivalentes para la generación anual:
     g90 = round(anio["mix"]["Eólica"]["mwh"] / (2000 * 8760 * factor / 100 * 0.2058 / 0.2058) )  # placeholder
 
@@ -126,6 +131,9 @@ def main() -> int:
         "fuente": FUENTE,
         "anual": anio,
         "potencia_eolica_mw": POTENCIA_EOLICA_MW,
+        "eolica_peninsular_2025_mwh": round(pen),
+        "eolica_peninsular_fuente": GEN_2025_PEN_URL,
+        "ambitos": "generación y cuotas: nacional; factor de capacidad y «cuántos G90»: peninsular",
         "potencia_fuente": {"url": POTENCIA_URL, "fecha": "cierre 2025, provisional a enero 2026"},
         "factor_capacidad_pct": factor,
         "ultimo_dato": {"fecha": ultimo, "mwh": round(eol[ultimo]), "cuota_pct": cuota(ultimo)},

@@ -16,9 +16,12 @@ Web interactiva del episodio **cci-18** de la serie [«Construido con IA»](http
 |---|---|---|---|
 | Eólica 2025 (España) | 58.756.339 MWh · 21,6 % | [REData API, estructura de generación](https://www.ree.es/es/datos/generacion/estructura-generacion) (el [Informe del Sistema Eléctrico 2025](https://www.sistemaelectrico-ree.es/sites/default/files/informes/2026/ise-2025.pdf) publica 58.801 GWh · 21,6 %) | descarga diaria |
 | Mix 2025 (nuclear, solar, ciclo…) | REData, mismo endpoint | REData API | descarga diaria |
+| Eólica 2025 (peninsular) | 57.383.154 MWh | REData, mismo endpoint con `geo_limit=peninsular&geo_ids=8741` | descarga diaria |
 | Potencia eólica instalada | 32.593 MW (peninsular, 31.12.2025) | [REE, Informes del sistema eléctrico](https://www.sistemaelectrico-ree.es/es/informe-del-sistema-electrico/potencia-instalada) | cierre 2025 (provisional, ene. 2026) |
 | Ficha del aerogenerador | rotor 90 m, palas 44 m, 9–19 rpm, 1:100,5, 690 V… | Manual Gamesa GD005900 rev. 11 y folleto G90-2.0 MW | — |
 | Curva de potencia | arranque 3 · nominal 14 · corte 21 m/s | Folleto G90 (lectura del gráfico: **estimación razonada**) | — |
+
+**Ámbitos:** la generación y las cuotas del mix son nacionales (sistema eléctrico español). El factor de capacidad y «cuántos G90» usan el ámbito **peninsular** en numerador y denominador: 57.383 GWh ÷ (32.593 MW × 8.760 h) = 20,1 %, de ahí ≈ 16.290 G90. Mezclar la generación nacional con la potencia peninsular daría 20,6 %, y se evita.
 
 La API de potencia instalada de REData (`generacion/potencia-instalada`) devolvía error 500 en noviembre de 2026, así que la potencia instalada es un dato constante del cierre 2025 citado al informe anual; se actualizará cuando REE publique el cierre siguiente.
 

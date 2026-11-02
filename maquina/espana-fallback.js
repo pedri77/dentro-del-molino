@@ -1,7 +1,7 @@
-// Generado por respaldo.mjs desde espana.json (2026-11-02 09:13 UTC). No editar a mano.
+// Generado por respaldo.mjs desde espana.json (2026-11-02 09:51 UTC). No editar a mano.
 export const FALLBACK_ES = {
  "titulo": "España, con datos de Red Eléctrica",
- "descargado": "2026-11-02 09:13 UTC",
+ "descargado": "2026-11-02 09:51 UTC",
  "fuente": {
   "nombre": "Red Eléctrica de España (REData API)",
   "url_api": "https://apidatos.ree.es/es/datos/generacion/estructura-generacion",
@@ -80,11 +80,14 @@ export const FALLBACK_ES = {
   }
  },
  "potencia_eolica_mw": 32593,
+ "eolica_peninsular_2025_mwh": 57383154,
+ "eolica_peninsular_fuente": "https://apidatos.ree.es/es/datos/generacion/estructura-generacion?start_date=2025-01-01T00:00&end_date=2025-12-31T23:59&time_trunc=year&geo_limit=peninsular&geo_ids=8741",
+ "ambitos": "generación y cuotas: nacional; factor de capacidad y «cuántos G90»: peninsular",
  "potencia_fuente": {
   "url": "https://www.sistemaelectrico-ree.es/es/informe-del-sistema-electrico/potencia-instalada",
   "fecha": "cierre 2025, provisional a enero 2026"
  },
- "factor_capacidad_pct": 20.6,
+ "factor_capacidad_pct": 20.1,
  "ultimo_dato": {
   "fecha": "2026-10-30",
   "mwh": 44233,
