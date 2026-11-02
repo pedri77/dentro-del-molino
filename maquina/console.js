@@ -202,8 +202,8 @@ export function createConsole(app) {
         <span class="lb">MÁS FLOJO · ${fecha(d.minimo_diario.fecha)}</span><span class="vl mono">${nf(d.minimo_diario.mwh)} MWh · ${fmt(d.minimo_diario.cuota_pct)} %</span>
       </div>
       <div style="height:1px;background:${C.line};margin:6px 0"></div>
-      <div class="vl mono" style="font-size:12px">≈ ${nf(g90)} G90 como este, todo el año (península)</div>
-      <div class="lb" style="font-size:7px;margin-top:2px">${nf(Math.round(pen / 1000))} GWh peninsulares ÷ (2 MW × 8.760 h × ${fmt(d.factor_capacidad_pct)} %)</div>
+      <div class="vl mono" style="font-size:12px">≈ ${nf(g90)} G90 como este, todo el año</div>
+      <div class="lb" style="font-size:7px;margin-top:2px">${nf(Math.round(pen / 1000))} GWh (península) ÷ (2 MW × 8.760 h × ${fmt(d.factor_capacidad_pct)} %)</div>
       <div class="lb" style="font-size:7px;margin-top:8px;color:${C.mute}">Actualizado: ${d.descargado} · Fuente: <a class="src" href="${d.fuente.url_web}" target="_blank" rel="noopener">REData (REE)</a> · <a class="src" href="${d.potencia_fuente.url}" target="_blank" rel="noopener">potencia</a></div>`;
   };
   renderEspana();
