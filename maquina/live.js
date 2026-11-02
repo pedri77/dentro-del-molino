@@ -3,6 +3,7 @@
 // Vistas 1-5, G abre la góndola, ESPACIO pausa; órbita con arrastre y zoom con la rueda. Sin tocar,
 // la página se enseña sola con el guion de la película y un cursor; cualquier gesto cede el control,
 // y 25 s de calma lo devuelven. Los datos de España se cargan de data/espana.json con respaldo propio.
+import {createVertical} from 'teardown-kit/vertical.js';
 import {warmComposer} from 'teardown-kit/warm.js';
 import {estadoAt, clamp} from './aero.js';
 import {createConsole, VIEW_KEYS, WIND_MAX} from './console.js';
@@ -17,7 +18,7 @@ const wrapDeg = (d) => ((((d + 180) % 360) + 360) % 360) - 180;
 
 const CSS = (top) => `
 html,body{background:#dfe6ea;overflow:hidden}
-#app{position:absolute!important;inset:auto!important;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0}
+#app{position:fixed!important;inset:auto!important;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0}
 #gl{touch-action:none;cursor:grab}
 #gl.drag{cursor:grabbing}
 .vb{pointer-events:auto;cursor:pointer}
@@ -37,6 +38,8 @@ html,body{background:#dfe6ea;overflow:hidden}
 .portada .f{font:500 11px/1.5 Inter,system-ui,sans-serif;color:#8a7f6c;margin-top:8px}
 .portada a{color:#8a7f6c}
 @media (orientation:portrait) and (max-width:820px){.portada{display:block}}
+.vrot{position:fixed;left:0;right:0;bottom:0;padding:14px 20px 44px;background:linear-gradient(rgba(223,230,234,0),rgba(243,238,227,.94) 30%);color:#3a342b;font:500 13px/1.45 Inter,system-ui,sans-serif;z-index:50;pointer-events:none}
+.vrot b{display:block;font:700 22px/1.15 'JetBrains Mono',monospace;color:#d0592a;margin-bottom:2px}
 `;
 
 async function loadData() {
@@ -87,6 +90,7 @@ export function runLive() {
   loadData().then(() => {
     portada();
     ui.renderEspana();
+    dispatchEvent(new Event('resize'));
   });
 
   const TIERS = [
@@ -104,8 +108,13 @@ export function runLive() {
   };
   applyTier();
 
+  const vert = createVertical({app, canvas, st, W, H, top: () => document.querySelector('.portada')?.offsetHeight ?? 0, pr: () => TIERS[tier].pr});
   let scale = 1;
   const fit = () => {
+    if (vert.place()) {
+      scale = 1;
+      return;
+    }
     const h = innerHeight - top;
     scale = Math.min(innerWidth / W, h / H);
     app.style.transform = `translate(${(innerWidth - W * scale) / 2}px, ${top + (h - H * scale) / 2}px) scale(${scale})`;
@@ -340,7 +349,11 @@ export function runLive() {
     const dAz = wrapDeg((tgt.az - cam.az) * (180 / Math.PI)) * (Math.PI / 180);
     cam.az += dAz * k;
     for (const key of ['tx', 'ty', 'tz', 'el', 'd', 'sx', 'sy']) cam[key] += (tgt[key] - cam[key]) * k;
-    st.frame(est, T, cam, {theta, iso, flow});
+    st.frame(est, T, vert.cam(cam), {theta, iso, flow});
+    if (vert.on) {
+      const nf = (x, d = 0) => x.toLocaleString('es-ES', {maximumFractionDigits: d, minimumFractionDigits: d});
+      vert.caption(`<b>${nf(est.potencia)} kW</b>viento ${nf(est.viento, 1)} m/s · rotor ${nf(est.rpm, 1)} rpm · paso ${nf(est.paso, 1)}°`);
+    }
 
     odd = !odd;
     if (tier > 0 && odd) ui.pointer(cursor);

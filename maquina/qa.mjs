@@ -4,7 +4,7 @@
 // a 1440 y 390 px de ancho. Uso: node molino-shared/qa.mjs <url> [out-dir]
 import fs from 'node:fs';
 import path from 'node:path';
-import {CHROMIUM, CHROMIUM_ARGS, playwright} from '/Users/pedri77/.omp/agent/skills/teardown/paths.mjs';
+import {CHROMIUM, CHROMIUM_ARGS, playwright} from '/Users/pedri77/.agents/skills/teardown/paths.mjs';
 
 const url = process.argv[2];
 const out = process.argv[3] || 'teardown-out/qa';
